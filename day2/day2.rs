@@ -9,7 +9,6 @@ fn main() -> std::io::Result<()> {
 
     let mut data: Vec<Vec<i32>> = Vec::new();
 
-
     let mut line_index = 0;
     for line in reader.lines() {
         data.push(Vec::new());
@@ -71,4 +70,47 @@ fn part_one(mut data: Vec<Vec<i32>>) {
     }
 
     println!("Part 1 Answer: {}\n", safe_count);
+}
+
+fn part_two(mut data: Vec<Vec<i32>>) {
+    let mut safe_count = 0;
+
+    for row in data {
+        let mut increased = false;
+        let mut decreased = false;
+        let mut equal = false;
+
+        let mut safe = true;
+
+        for (index, value) in row.iter().enumerate() {
+            if index == 0 {
+                continue;
+            }
+
+            let last_value = row[index - 1];
+            let next_value = row[index + 1];
+
+            if last_value < *value {
+                increased = true;
+            }
+            if last_value > *value {
+                decreased = true
+            }
+            if last_value == *value {
+                equal = true
+            }
+
+            safe = (value - last_value).abs() <= MAX_DISTANCE;
+
+            safe = safe && increased != decreased && !equal;
+
+            if !safe {
+                break;
+            }
+        }
+
+        safe_count = if safe { safe_count + 1 } else { safe_count };
+    }
+
+    println!("Part 2 Answer: {}\n", safe_count);
 }
